@@ -5,11 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="../css/index.css" />
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/general.css" />
-    <link rel="stylesheet" href="../css/transfer.css" />
-    <link rel="stylesheet" href="../css/login.css" />
+    <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/general.css" />
+    <link rel="stylesheet" href="css/transfer.css" />
+    <link rel="stylesheet" href="css/login.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -23,13 +23,15 @@
     <div class="form-container">
       <div class="form-box">
         <form class="form" action="">
-          <div>
+          <div class="form-control">
             <label for="username">Enter Username </label>
             <input class="login-username" type="text" name="username" />
+            <small>Error message</small>
           </div>
-          <div>
+          <div class="form-control">
             <label for="pin">Enter pin </label>
             <input class="login-pin" type="text" name="pin" />
+            <small>Error message</small>
           </div>
           <div class="btn-container">
             <button class="login-btn">Login</button>
@@ -42,33 +44,33 @@
         <nav class="side-nav dis-grid">
           <ul class="nav-items dis-grid">
             <li class="nav-item dis-flex">
-              <img class="nav-icon" src="../regular/house.svg" alt="" />
+              <img class="nav-icon" src="regular/house.svg" alt="" />
               <a class="nav-link nav-link-home" href="">Home</a>
             </li>
             <li class="nav-item dis-flex">
-              <img class="nav-icon" src="../regular/share-fat.svg" alt="" />
+              <img class="nav-icon" src="regular/share-fat.svg" alt="" />
               <a class="nav-link nav-link-transfer" href="">Transfer</a>
             </li>
             <li class="nav-item dis-flex">
               <img
                 class="nav-icon"
-                src="../regular/clock-counter-clockwise.svg"
+                src="regular/clock-counter-clockwise.svg"
                 alt=""
               /><a class="nav-link nav-link-history" href="">History</a>
             </li>
             <li class="nav-item dis-flex">
-              <img
-                class="nav-icon"
-                src="../regular/device-mobile.svg"
-                alt=""
-              /><a class="nav-link nav-link-topup" href="">Top Up</a>
+              <img class="nav-icon" src="regular/device-mobile.svg" alt="" /><a
+                class="nav-link nav-link-topup"
+                href=""
+                >Top Up</a
+              >
             </li>
             <li class="nav-item dis-flex">
-              <img class="nav-icon" src="../regular/users.svg" alt="" />
+              <img class="nav-icon" src="regular/users.svg" alt="" />
               <a class="nav-link nav-link-contacts" href="">Contacts</a>
             </li>
             <li class="nav-item dis-flex">
-              <img class="nav-icon" src="../regular/gear.svg" alt="" /><a
+              <img class="nav-icon" src="regular/gear.svg" alt="" /><a
                 class="nav-link nav-link-settings"
                 href=""
                 >Settings</a
@@ -81,7 +83,7 @@
           <div class="top-nav">
             <div class="dis-flex gap-sm">
               <div class="logo">
-                <img src="../images/UBA-Logo-1.png" alt="" />
+                <img src="images/UBA-Logo-1.png" alt="" />
               </div>
               <div class="top-nav-box dis-flex">
                 <div class="greeting-box dis-flex">
@@ -111,7 +113,7 @@
                     </svg>
 
                     <div class="user-dp">
-                      <img src="../images/customer-6.jpg" alt="" />
+                      <img src="images/customer-6.jpg" alt="" />
                     </div>
                   </div>
                 </div>
@@ -188,42 +190,42 @@
               <div class="home-icon">
                 <a class="home-icon-link home-icon-link-home" href="">
                   <p>Home</p>
-                  <img src="../regular/house.svg" alt="" />
+                  <img src="regular/house.svg" alt="" />
                 </a>
               </div>
 
               <div class="home-icon">
                 <a class="home-icon-link home-icon-link-transfer" href="">
                   <p>Transfer</p>
-                  <img src="../regular/share-fat.svg" alt="" />
+                  <img src="regular/share-fat.svg" alt="" />
                 </a>
               </div>
 
               <div class="home-icon">
                 <a class="home-icon-link home-icon-link-history" href="">
                   <p>History</p>
-                  <img src="../regular/clock-counter-clockwise.svg" alt="" />
+                  <img src="regular/clock-counter-clockwise.svg" alt="" />
                 </a>
               </div>
 
               <div class="home-icon">
                 <a class="home-icon-link home-icon-link-loan" href="">
                   <p>Top Up</p>
-                  <img src="../regular/phone.svg" alt="" />
+                  <img src="regular/phone.svg" alt="" />
                 </a>
               </div>
 
               <div class="home-icon">
                 <a class="home-icon-link home-icon-link-contacts" href="">
                   <p>Contacts</p>
-                  <img src="../regular/users.svg" alt="" />
+                  <img src="regular/users.svg" alt="" />
                 </a>
               </div>
 
               <div class="home-icon">
                 <a class="home-icon-link home-icon-link-settings" href="">
                   <p>Settings</p>
-                  <img src="../regular/gear.svg" alt="" />
+                  <img src="regular/gear.svg" alt="" />
                 </a>
               </div>
             </div>
@@ -289,7 +291,7 @@
       </div>
     </header>
 
-    <script src="../js/script.js" type="module"></script>
+    <script src="js/script.js"></script>
     <!-- <script src="../js/home.js" type="module"></script>
     <script src="../js/transfer.js" type="module"></script>
     <script src="../js/login.js" type="module"></script> -->

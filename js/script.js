@@ -106,306 +106,427 @@ const account2 = {
 const accounts = [account1, account2];
 const incomeFlows = [3500, 20000, -3700, 7000, -15000, 235000, 6000];
 
-navLink.forEach((link) => {
-  link.style.opacity = ".6";
-});
+// Form Validation
 
-// Functions
+// Check if username value is empty
+// Check if it contains special characters
+// Check if it is between 3 to 10 characters
 
-// Displaying transactions
-const displayTransaction = function (acc) {
-  transactionsContainer.innerHTML = "";
+// Setting error message
+const setError = (element, message) => {
+  const formControl = element.parentElement;
+  const errorDisplay = formControl.querySelector("small");
 
-  acc.incomeFlows.forEach(function (income, index) {
-    const type = income > 0 ? "deposit" : "transfer";
-
-    const now = new Date();
-    console.log(now);
-    const date = `${now.getDate()}`.padStart(2, 0);
-    const month = `${now.getMonth() + 1}`.padStart(2, 0);
-    const year = now.getFullYear();
-    const detailDisplay = acc.details[index];
-    console.log(detailDisplay);
-
-    const html = `<div class="transaction">
-        <div class="transaction-title id">
-          <p>#00${index + 1}</p>
-        </div>
-        <div class="transaction-title date">
-          <p>${date}/${month}/${year}</p>
-        </div>
-        <div class="transaction-title type type-${type}">
-          <p>${type.toUpperCase()}</p>
-        </div>
-        <div class="transaction-title details">
-          <p>${detailDisplay}</p>
-        </div>
-        <div class="transaction-title type-${type} amount">
-          <p>${currencyFormat(
-            Math.abs(income),
-            navigator.language,
-            acc.currency
-          )}</p>
-          </div>
-          </div>`;
-    transactionsContainer.insertAdjacentHTML("afterbegin", html);
-  });
+  errorDisplay.textContent = message;
+  errorDisplay.classList.add("error");
 };
 
-// // console.log(transactionsContainer);
+const setSuccess = (element, message) => {
+  const formControl = element.parentElement;
+  const errorDisplay = formControl.querySelector("small");
 
-// Displaying Date
-const displayDate = setInterval(function () {
-  const now = new Date();
-  // console.log(now);
-  const date = `${now.getDate()}`.padStart(2, 0);
-  const month = `${now.getMonth() + 1}`.padStart(2, 0);
-  const year = now.getFullYear();
-  const hour = `${now.getHours()}`.padStart(2, 0);
-  const minutes = `${now.getMinutes()}`.padStart(2, 0);
-
-  const options = {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-  };
-
-  dateEl.textContent = new Intl.DateTimeFormat("en-US", options).format(now);
-}, 1000);
-
-// Formatting currency
-const currencyFormat = function (value, locale, currency) {
-  return new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency: currency,
-  }).format(value);
+  errorDisplay.textContent = "";
 };
 
-// Displaying Current Balance
-const displayCurBalance = function (acc) {
-  acc.totalBalance = acc.incomeFlows.reduce((acc, cur) => acc + cur, 0);
-  curBalanceEl.textContent = currencyFormat(
-    acc.totalBalance,
-    navigator.language,
-    acc.currency
-  );
-  console.log(curBalanceEl.textContent);
-  console.log(acc.totalBalance);
-};
-
-// Displaying Total Incomes
-const displayIncomes = function (acc) {
-  acc.totalIncomes = acc.incomeFlows
-    .filter((income) => income > 0)
-    .reduce((acc, cur) => acc + cur, 0);
-
-  incBalanceEl.textContent = currencyFormat(
-    acc.totalIncomes,
-    navigator.language,
-    acc.currency
-  );
-  console.log(acc.totalIncomes);
-};
-
-// Displaying Total Expenses
-const displayExpenses = function (acc) {
-  acc.totalExpenses = acc.incomeFlows
-    .filter((income) => income < 0)
-    .reduce((acc, cur) => acc + cur, 0);
-
-  expBalanceEl.textContent = currencyFormat(
-    Math.abs(acc.totalExpenses),
-    navigator.language,
-    acc.currency
-  );
-  console.log(acc.totalExpenses);
-};
-
-// let currentAcc;
-// let username;
-// let pin;
-
-const homeActive = function () {
-  homeNav.style.opacity = "1";
-  historyNav.style.opacity = ".6";
-  transferNav.style.opacity = ".6";
-  topupNav.style.opacity = ".6";
-  contactNav.style.opacity = ".6";
-  settingsNav.style.opacity = ".6";
+// Displaying landing page
+const displayPage = () => {
+  loginPageUI.classList.add("hidden");
+  bodyUI.classList.remove("hidden");
   homePageUI.classList.remove("hidden");
-  historyPageUI.classList.add("hidden");
   transferPageUI.classList.add("hidden");
+  historyPageUI.classList.add("hidden");
 };
 
-const transferActive = function () {
-  transferNav.style.opacity = "1";
-  homeNav.style.opacity = ".6";
-  historyNav.style.opacity = ".6";
-  topupNav.style.opacity = ".6";
-  contactNav.style.opacity = ".6";
-  settingsNav.style.opacity = ".6";
-  transferPageUI.classList.remove("hidden");
-  historyPageUI.classList.add("hidden");
-  homePageUI.classList.add("hidden");
-};
+// Retrieving details from local storage
+const storedUsername = localStorage.getItem("username");
+const storedPin = localStorage.getItem("pin");
 
-const historyActive = function () {
-  historyNav.style.opacity = "1";
-  homeNav.style.opacity = ".6";
-  transferNav.style.opacity = ".6";
-  topupNav.style.opacity = ".6";
-  contactNav.style.opacity = ".6";
-  settingsNav.style.opacity = ".6";
-  historyPageUI.classList.remove("hidden");
-  homePageUI.classList.add("hidden");
-  transferPageUI.classList.add("hidden");
+// Automatically display page if user has
+if (storedUsername && storedPin) displayPage();
+
+// Retrieving user inputs
+const inputUsernameLoginValue = inputUsernameLogin.value.trim();
+const inputPinLoginValue = inputPinLogin.value.trim();
+
+// Validating user login
+const validateUserLogin = () => {
+  // Check if username or pin value is empty
+  if (inputUsernameLoginValue === "" || inputPinLoginValue === "") {
+    setError(inputUsernameLogin, "Please enter a username");
+    setError(inputPinLogin, "Please enter a pin");
+  } else if (
+    // check if username and pin values is in local storage
+    inputUsernameLoginValue === storedUsername &&
+    inputPinLoginValue === storedPin
+  ) {
+    displayPage();
+  } else {
+    // Save the username and pin to local storage
+    localStorage.setItem("username", inputUsernameLoginValue);
+    localStorage.setItem("pin", inputPinLoginValue);
+
+    displayPage();
+  }
 };
 
 // Implementing Login
 btnLogin.addEventListener("click", function (e) {
   e.preventDefault();
+  validateUserLogin();
+  // validatePinLogin();
 
-  const username = inputUsernameLogin.value;
-  console.log(username);
+  // if (
+  //   inputUsernameLoginValue === storedUsername &&
+  //   inputPinLoginValue === storedPin
+  // ) {
+  //   loginPageUI.classList.add("hidden");
+  //   bodyUI.classList.remove("hidden");
+  //   homePageUI.classList.remove("hidden");
+  //   transferPageUI.classList.add("hidden");
+  //   historyPageUI.classList.add("hidden");
+  // } else {
+  //   localStorage.setItem("username", inputUsernameLoginValue);
+  //   localStorage.setItem("pin", inputPinLoginValue);
 
-  const pin = Number(inputPinLogin.value);
-  console.log(pin);
-
-  currentAcc = accounts.find((acc) => acc.username === username);
-  console.log(currentAcc);
-
-  if (currentAcc?.pin === pin) {
-    loginPageUI.classList.add("hidden");
-    bodyUI.classList.remove("hidden");
-    homePageUI.classList.remove("hidden");
-    transferPageUI.classList.add("hidden");
-    historyPageUI.classList.add("hidden");
-    greetingEl.textContent = `Good morning, ${username}`;
-  }
-
-  inputUsernameLogin.value = "";
-  inputPinLogin.value = "";
-
-  displayTransaction(currentAcc);
-  displayCurBalance(currentAcc);
-  displayIncomes(currentAcc);
-  displayExpenses(currentAcc);
-  console.log(currentAcc);
+  //   loginPageUI.classList.add("hidden");
+  //   bodyUI.classList.remove("hidden");
+  //   homePageUI.classList.remove("hidden");
+  //   transferPageUI.classList.add("hidden");
+  //   historyPageUI.classList.add("hidden");
+  // }
 });
+
+// } else if (inputPinLoginValue.length < 4 || inputPinLoginValue.length > 4) {
+//   alert("Pin must be 4 digits!");
+// inputUsernameLogin.addEventListener("change", function (e) {
+//   validateLoginInput();
+// });
+
+// Check if input pin value is empty
+// Check if it is only numbers
+// Check if it is 4 digits
+
+// const validatePinLogin = () => {
+
+//   if ((inputPinLoginValue = "")) {
+//     alert("Please enter your pin!");
+//   } else if (inputPinLoginValue.length < 4 || inputPinLoginValue.length > 4) {
+//     alert("Pin must be 4 digits!");
+//   }
+// };
+
+//  if (inputUsernameLoginValue === "" && inputPinLogin.value === "") {
+//    alert("Please fill in your username and pin to continue!!!");
+//  } else if (inputUsernameLogin.value === "") {
+//    alert("Please fill in your username!!!");
+//  } else if (inputPinLogin.value === "") {
+//    alert("Please fill in your pin!!!");
+//  }
+
+// btnLogin.addEventListener("click", function (e) {
+//   e.preventDefault();
+//   validateUsernameLogin();
+// });
+
+// navLink.forEach((link) => {
+//   link.style.opacity = ".6";
+// });
+
+// Functions
+
+// Displaying transactions
+// const displayTransaction = function (acc) {
+//   transactionsContainer.innerHTML = "";
+
+//   acc.incomeFlows.forEach(function (income, index) {
+//     const type = income > 0 ? "deposit" : "transfer";
+
+//     const now = new Date();
+//     console.log(now);
+//     const date = `${now.getDate()}`.padStart(2, 0);
+//     const month = `${now.getMonth() + 1}`.padStart(2, 0);
+//     const year = now.getFullYear();
+//     const detailDisplay = acc.details[index];
+//     console.log(detailDisplay);
+
+//     const html = `<div class="transaction">
+//         <div class="transaction-title id">
+//           <p>#00${index + 1}</p>
+//         </div>
+//         <div class="transaction-title date">
+//           <p>${date}/${month}/${year}</p>
+//         </div>
+//         <div class="transaction-title type type-${type}">
+//           <p>${type.toUpperCase()}</p>
+//         </div>
+//         <div class="transaction-title details">
+//           <p>${detailDisplay}</p>
+//         </div>
+//         <div class="transaction-title type-${type} amount">
+//           <p>${currencyFormat(
+//             Math.abs(income),
+//             navigator.language,
+//             acc.currency
+//           )}</p>
+//           </div>
+//           </div>`;
+//     transactionsContainer.insertAdjacentHTML("afterbegin", html);
+//   });
+// };
+
+// // // console.log(transactionsContainer);
+
+// // Displaying Date
+// const displayDate = setInterval(function () {
+//   const now = new Date();
+//   // console.log(now);
+//   const date = `${now.getDate()}`.padStart(2, 0);
+//   const month = `${now.getMonth() + 1}`.padStart(2, 0);
+//   const year = now.getFullYear();
+//   const hour = `${now.getHours()}`.padStart(2, 0);
+//   const minutes = `${now.getMinutes()}`.padStart(2, 0);
+
+//   const options = {
+//     day: "numeric",
+//     month: "short",
+//     year: "numeric",
+//     hour: "numeric",
+//     minute: "numeric",
+//     second: "numeric",
+//   };
+
+//   dateEl.textContent = new Intl.DateTimeFormat("en-US", options).format(now);
+// }, 1000);
+
+// // Formatting currency
+// const currencyFormat = function (value, locale, currency) {
+//   return new Intl.NumberFormat(locale, {
+//     style: "currency",
+//     currency: currency,
+//   }).format(value);
+// };
+
+// // Displaying Current Balance
+// const displayCurBalance = function (acc) {
+//   acc.totalBalance = acc.incomeFlows.reduce((acc, cur) => acc + cur, 0);
+//   curBalanceEl.textContent = currencyFormat(
+//     acc.totalBalance,
+//     navigator.language,
+//     acc.currency
+//   );
+//   console.log(curBalanceEl.textContent);
+//   console.log(acc.totalBalance);
+// };
+
+// // Displaying Total Incomes
+// const displayIncomes = function (acc) {
+//   acc.totalIncomes = acc.incomeFlows
+//     .filter((income) => income > 0)
+//     .reduce((acc, cur) => acc + cur, 0);
+
+//   incBalanceEl.textContent = currencyFormat(
+//     acc.totalIncomes,
+//     navigator.language,
+//     acc.currency
+//   );
+//   console.log(acc.totalIncomes);
+// };
+
+// // Displaying Total Expenses
+// const displayExpenses = function (acc) {
+//   acc.totalExpenses = acc.incomeFlows
+//     .filter((income) => income < 0)
+//     .reduce((acc, cur) => acc + cur, 0);
+
+//   expBalanceEl.textContent = currencyFormat(
+//     Math.abs(acc.totalExpenses),
+//     navigator.language,
+//     acc.currency
+//   );
+//   console.log(acc.totalExpenses);
+// };
+
+// // let currentAcc;
+// // let username;
+// // let pin;
+
+// const homeActive = function () {
+//   homeNav.style.opacity = "1";
+//   historyNav.style.opacity = ".6";
+//   transferNav.style.opacity = ".6";
+//   topupNav.style.opacity = ".6";
+//   contactNav.style.opacity = ".6";
+//   settingsNav.style.opacity = ".6";
+//   homePageUI.classList.remove("hidden");
+//   historyPageUI.classList.add("hidden");
+//   transferPageUI.classList.add("hidden");
+// };
+
+// const transferActive = function () {
+//   transferNav.style.opacity = "1";
+//   homeNav.style.opacity = ".6";
+//   historyNav.style.opacity = ".6";
+//   topupNav.style.opacity = ".6";
+//   contactNav.style.opacity = ".6";
+//   settingsNav.style.opacity = ".6";
+//   transferPageUI.classList.remove("hidden");
+//   historyPageUI.classList.add("hidden");
+//   homePageUI.classList.add("hidden");
+// };
+
+// const historyActive = function () {
+//   historyNav.style.opacity = "1";
+//   homeNav.style.opacity = ".6";
+//   transferNav.style.opacity = ".6";
+//   topupNav.style.opacity = ".6";
+//   contactNav.style.opacity = ".6";
+//   settingsNav.style.opacity = ".6";
+//   historyPageUI.classList.remove("hidden");
+//   homePageUI.classList.add("hidden");
+//   transferPageUI.classList.add("hidden");
+// };
+
+// const username = inputUsernameLogin.value.trim();
+// console.log(username);
+
+// const pin = Number(inputPinLogin.value);
+// console.log(pin);
+
+// currentAcc = accounts.find((acc) => acc.username === username);
+// console.log(currentAcc);
+
+// if (currentAcc?.pin === pin) {
+//   loginPageUI.classList.add("hidden");
+//   bodyUI.classList.remove("hidden");
+//   homePageUI.classList.remove("hidden");
+//   transferPageUI.classList.add("hidden");
+//   historyPageUI.classList.add("hidden");
+//   greetingEl.textContent = `Good morning, ${username}`;
+// } else {
+//   validateUsernameLogin();
+//   validateLoginInput();
+// }
+
+// inputUsernameLogin.value = "";
+// inputPinLogin.value = "";
+
+// displayTransaction(currentAcc);
+// displayCurBalance(currentAcc);
+// displayIncomes(currentAcc);
+// displayExpenses(currentAcc);
+// console.log(currentAcc);
+// });
 
 // Implementing Logout
-btnLogout.addEventListener("click", function (e) {
-  e.preventDefault();
+// btnLogout.addEventListener("click", function (e) {
+//   e.preventDefault();
 
-  loginPageUI.classList.remove("hidden");
-  bodyUI.classList.add("hidden");
-});
-// displayCurBalance(currentAcc);
-// displayExpenses(currentAcc);
-// displayIncomes(currentAcc);
-// displayTransaction(currentAcc);
-// console.log(currentAcc.totalBalance);
+//   loginPageUI.classList.remove("hidden");
+//   bodyUI.classList.add("hidden");
+// });
+// // displayCurBalance(currentAcc);
+// // displayExpenses(currentAcc);
+// // displayIncomes(currentAcc);
+// // displayTransaction(currentAcc);
+// // console.log(currentAcc.totalBalance);
 
-// Implementing transfers
-btnTransfer.addEventListener("click", function (e) {
-  e.preventDefault();
+// // Implementing transfers
+// btnTransfer.addEventListener("click", function (e) {
+//   e.preventDefault();
 
-  const receiverAcc = accounts.find(
-    (acc) => acc.accountNo === Number(inputAcc.value)
-  );
-  const amount = Number(inputAmt.value);
-  const purpose = inputPurp.value;
-  const pin = Number(inputPin.value);
+//   const receiverAcc = accounts.find(
+//     (acc) => acc.accountNo === Number(inputAcc.value)
+//   );
+//   const amount = Number(inputAmt.value);
+//   const purpose = inputPurp.value;
+//   const pin = Number(inputPin.value);
 
-  if (
-    receiverAcc?.accountNo !== currentAcc.accountNo &&
-    amount > 0 &&
-    amount <= currentAcc.totalBalance &&
-    currentAcc.pin === pin
-  ) {
-    currentAcc.incomeFlows.push(-amount);
-    currentAcc.details.push(purpose);
-    receiverAcc.incomeFlows.push(amount);
-    receiverAcc.details.push(purpose);
-  }
+//   if (
+//     receiverAcc?.accountNo !== currentAcc.accountNo &&
+//     amount > 0 &&
+//     amount <= currentAcc.totalBalance &&
+//     currentAcc.pin === pin
+//   ) {
+//     currentAcc.incomeFlows.push(-amount);
+//     currentAcc.details.push(purpose);
+//     receiverAcc.incomeFlows.push(amount);
+//     receiverAcc.details.push(purpose);
+//   }
 
-  inputAmt.value = "";
-  inputPurp.value = "";
-  inputPin.value = "";
-  inputAcc.value = "";
+//   inputAmt.value = "";
+//   inputPurp.value = "";
+//   inputPin.value = "";
+//   inputAcc.value = "";
 
-  displayCurBalance(currentAcc);
-  displayExpenses(currentAcc);
-  displayIncomes(currentAcc);
-  displayTransaction(currentAcc);
-  console.log(currentAcc.totalBalance);
-});
+//   displayCurBalance(currentAcc);
+//   displayExpenses(currentAcc);
+//   displayIncomes(currentAcc);
+//   displayTransaction(currentAcc);
+//   console.log(currentAcc.totalBalance);
+// });
 
-// Implementing navigations
+// // Implementing navigations
 
-// Preventing side navigation link defaults
-navLink.forEach((link) => {
-  link.addEventListener("click", function (e) {
-    e.preventDefault();
-  });
-});
+// // Preventing side navigation link defaults
+// navLink.forEach((link) => {
+//   link.addEventListener("click", function (e) {
+//     e.preventDefault();
+//   });
+// });
 
-// Preventing home icon navigation link defaults
-homeIconLink.forEach((link) => {
-  link.addEventListener("click", function (e) {
-    e.preventDefault();
-  });
-});
+// // Preventing home icon navigation link defaults
+// homeIconLink.forEach((link) => {
+//   link.addEventListener("click", function (e) {
+//     e.preventDefault();
+//   });
+// });
 
-// Showing active links
-homeNav.addEventListener("click", function (e) {
-  homeActive();
-});
+// // Showing active links
+// homeNav.addEventListener("click", function (e) {
+//   homeActive();
+// });
 
-historyNav.addEventListener("click", function (e) {
-  historyActive();
-});
+// historyNav.addEventListener("click", function (e) {
+//   historyActive();
+// });
 
-transferNav.addEventListener("click", function (e) {
-  transferActive();
-});
+// transferNav.addEventListener("click", function (e) {
+//   transferActive();
+// });
 
-// topupNav.addEventListener("click", function (e) {});
+// // topupNav.addEventListener("click", function (e) {});
 
-// contactNav.addEventListener("click", function (e) {});
+// // contactNav.addEventListener("click", function (e) {});
 
-// settingsNav.addEventListener("click", function (e) {});
+// // settingsNav.addEventListener("click", function (e) {});
 
-homeIconNav.addEventListener("click", function (e) {
-  homeActive();
-});
+// homeIconNav.addEventListener("click", function (e) {
+//   homeActive();
+// });
 
-transferIconNav.addEventListener("click", function (e) {
-  transferActive();
-});
+// transferIconNav.addEventListener("click", function (e) {
+//   transferActive();
+// });
 
-historyIconNav.addEventListener("click", function (e) {
-  historyActive();
-});
+// historyIconNav.addEventListener("click", function (e) {
+//   historyActive();
+// });
 
-loanIconNav.addEventListener("click", function (e) {
-  // topupActive();
-});
+// loanIconNav.addEventListener("click", function (e) {
+//   // topupActive();
+// });
 
-contactsIconNav.addEventListener("click", function (e) {
-  // contactsActive();
-});
+// contactsIconNav.addEventListener("click", function (e) {
+//   // contactsActive();
+// });
 
-settingsIconNav.addEventListener("click", function (e) {
-  // settingActive();
-});
-// export {
-//   displayTransaction,
-//   displayDate,
-//   displayCurBalance,
-//   displayIncomes,
-//   displayExpenses,
-// };
+// settingsIconNav.addEventListener("click", function (e) {
+//   // settingActive();
+// });
+// // export {
+// //   displayTransaction,
+// //   displayDate,
+// //   displayCurBalance,
+// //   displayIncomes,
+// //   displayExpenses,
+// // };

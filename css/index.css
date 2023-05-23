@@ -48,3 +48,11 @@
 .active {
   opacity: 1;
 }
+
+small {
+  visibility: hidden;
+}
+
+.error {
+  visibility: visible;
+}
