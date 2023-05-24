@@ -65,6 +65,7 @@ const transferPageUI = document.querySelector(".transfer-container");
 const historyPageUI = document.querySelector(".transact-history-box");
 const loginPageUI = document.querySelector(".form-container");
 const bodyUI = document.querySelector(".header");
+const btnDeleteAcc = document.querySelector(".delete-account");
 
 const account1 = {
   holder: "Prince Ojukwu",
@@ -137,6 +138,15 @@ const displayPage = () => {
   historyPageUI.classList.add("hidden");
 };
 
+// Displaying login page
+const displayLogin = () => {
+  loginPageUI.classList.remove("hidden");
+  bodyUI.classList.add("hidden");
+  homePageUI.classList.add("hidden");
+  transferPageUI.classList.add("hidden");
+  historyPageUI.classList.add("hidden");
+};
+
 // Retrieving details from local storage
 const storedUsername = localStorage.getItem("username");
 const storedPin = localStorage.getItem("pin");
@@ -145,11 +155,11 @@ const storedPin = localStorage.getItem("pin");
 if (storedUsername && storedPin) displayPage();
 
 // Retrieving user inputs
-const inputUsernameLoginValue = inputUsernameLogin.value.trim();
-const inputPinLoginValue = inputPinLogin.value.trim();
 
 // Validating user login
 const validateUserLogin = () => {
+  const inputUsernameLoginValue = inputUsernameLogin.value.trim();
+  const inputPinLoginValue = inputPinLogin.value.trim();
   // Check if username or pin value is empty
   if (inputUsernameLoginValue === "" || inputPinLoginValue === "") {
     setError(inputUsernameLogin, "Please enter a username");
@@ -175,6 +185,9 @@ btnLogin.addEventListener("click", function (e) {
   validateUserLogin();
   // validatePinLogin();
 
+  //   loginPageUI.classList.remove("hidden");
+  //   bodyUI.classList.add("hidden");
+  // });
   // if (
   //   inputUsernameLoginValue === storedUsername &&
   //   inputPinLoginValue === storedPin
@@ -196,6 +209,25 @@ btnLogin.addEventListener("click", function (e) {
   // }
 });
 
+// Implementing Logout
+btnLogout.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  displayLogin();
+});
+
+btnDeleteAcc.addEventListener("click", function (e) {
+  e.preventDefault();
+  const confirmDelete = confirm(
+    "Are you sure you want to delete your account?"
+  );
+  if (confirmDelete) {
+    localStorage.removeItem("username");
+    localStorage.removeItem("pin");
+
+    displayLogin();
+  }
+});
 // } else if (inputPinLoginValue.length < 4 || inputPinLoginValue.length > 4) {
 //   alert("Pin must be 4 digits!");
 // inputUsernameLogin.addEventListener("change", function (e) {
@@ -417,13 +449,6 @@ btnLogin.addEventListener("click", function (e) {
 // console.log(currentAcc);
 // });
 
-// Implementing Logout
-// btnLogout.addEventListener("click", function (e) {
-//   e.preventDefault();
-
-//   loginPageUI.classList.remove("hidden");
-//   bodyUI.classList.add("hidden");
-// });
 // // displayCurBalance(currentAcc);
 // // displayExpenses(currentAcc);
 // // displayIncomes(currentAcc);
