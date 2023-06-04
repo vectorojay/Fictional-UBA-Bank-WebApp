@@ -1,29 +1,4 @@
 "use strict";
-// import {
-//   idEl,
-//   transferNav,
-//   dateEl,
-//   typeEl,
-//   detailsEl,
-//   greetingEl,
-//   curBalanceEl,
-//   incBalanceEl,
-//   expBalanceEl,
-//   transactionsContainer,
-//   inputAcc,
-//   inputAmt,
-//   inputPurp,
-//   inputPin,
-//   formLogin,
-//   btnTransfer,
-//   btnLogin,
-//   inputUsernameLogin,
-//   inputPinLogin,
-//   account1,
-//   account2,
-//   accounts,
-//   incomeFlows,
-// } from "./variables.js";
 
 //Elements
 let currentAcc;
@@ -109,10 +84,6 @@ const incomeFlows = [3500, 20000, -3700, 7000, -15000, 235000, 6000];
 
 // Form Validation
 
-// Check if username value is empty
-// Check if it contains special characters
-// Check if it is between 3 to 10 characters
-
 // Setting error message
 const setError = (element, message) => {
   const formControl = element.parentElement;
@@ -147,411 +118,111 @@ const displayLogin = () => {
   historyPageUI.classList.add("hidden");
 };
 
-// Retrieving details from local storage
-const storedUsername = localStorage.getItem("username");
-const storedPin = localStorage.getItem("pin");
+// Retrieving registered users from local storage
+const storedUsers = JSON.parse(localStorage.getItem("registeredUsers")) || [];
 
-// Automatically display page if user has
-if (storedUsername && storedPin) displayPage();
+// Removing error message when user starts typing in input box
+inputUsernameLogin.addEventListener("input", function (e) {
+  setSuccess(inputUsernameLogin);
+});
 
-// Retrieving user inputs
+inputPinLogin.addEventListener("input", function (e) {
+  setSuccess(inputPinLogin);
+});
+
+const userExists = storedUsers.some((user) => user.username);
+
+// // Retrieving user inputs
 
 // Validating user login
 const validateUserLogin = () => {
   const inputUsernameLoginValue = inputUsernameLogin.value.trim();
   const inputPinLoginValue = inputPinLogin.value.trim();
+  // const storedUsers = JSON.parse(localStorage.getItem("registeredUsers")) || [];
+
+  //   storedUsers.push(newUser);
+
+  //   localStorage.setItem("users", JSON.stringify(storedUsers));
+
   // Check if username or pin value is empty
-  if (inputUsernameLoginValue === "" || inputPinLoginValue === "") {
+  if (inputUsernameLoginValue === "" && inputPinLoginValue === "") {
     setError(inputUsernameLogin, "Please enter a username");
     setError(inputPinLogin, "Please enter a pin");
-  } else if (
-    // check if username and pin values is in local storage
-    inputUsernameLoginValue === storedUsername &&
-    inputPinLoginValue === storedPin
-  ) {
-    displayPage();
-  } else {
-    // Save the username and pin to local storage
-    localStorage.setItem("username", inputUsernameLoginValue);
-    localStorage.setItem("pin", inputPinLoginValue);
+    return;
+  }
 
+  if (inputUsernameLoginValue === "") {
+    setError(inputUsernameLogin, "Please enter a username");
+    return;
+  }
+
+  if (inputPinLoginValue === "") {
+    setError(inputPinLogin, "Please enter a pin");
+    return;
+  }
+
+  // Checking if user exists in local storage
+
+  const user = storedUsers.find(
+    (user) => user.username === inputUsernameLoginValue
+  );
+
+  const userExists = storedUsers.some((user) => user.username);
+
+  if (userExists) {
+    if (inputPinLoginValue === user.pin) {
+      console.log(user);
+      displayPage();
+    } else {
+      setError(inputPinLogin, "Incorrect Pin");
+    }
+  } else {
+    storedUsers.push({ inputUsernameLoginValue, inputPinLoginValue });
+    console.log(storedUsers);
+    localStorage.setItem("registeredUsers", JSON.stringify(storedUsers));
     displayPage();
   }
 };
 
-// Implementing Login
+//   // if (
+//   //   // check if username and pin values is in local storage
+//   //   storedUsers.includes(newUser[username])
+//   //   // inputUsernameLoginValue === storedUsername &&
+//   //   // inputPinLoginValue === storedPin
+//   // ) {
+//   //   displayPage();
+//   // } else {
+//   //   // Save the username and pin to local storage
+//   //   // storedUsers.push(newUser);
+//   //   // localStorage.setItem("username", inputUsernameLoginValue);
+//   //   // localStorage.setItem("pin", inputPinLoginValue);
+
+//   //   displayPage();
+//   // }
+// };
+
+// // Implementing Login
 btnLogin.addEventListener("click", function (e) {
   e.preventDefault();
   validateUserLogin();
   // validatePinLogin();
-
-  //   loginPageUI.classList.remove("hidden");
-  //   bodyUI.classList.add("hidden");
-  // });
-  // if (
-  //   inputUsernameLoginValue === storedUsername &&
-  //   inputPinLoginValue === storedPin
-  // ) {
-  //   loginPageUI.classList.add("hidden");
-  //   bodyUI.classList.remove("hidden");
-  //   homePageUI.classList.remove("hidden");
-  //   transferPageUI.classList.add("hidden");
-  //   historyPageUI.classList.add("hidden");
-  // } else {
-  //   localStorage.setItem("username", inputUsernameLoginValue);
-  //   localStorage.setItem("pin", inputPinLoginValue);
-
-  //   loginPageUI.classList.add("hidden");
-  //   bodyUI.classList.remove("hidden");
-  //   homePageUI.classList.remove("hidden");
-  //   transferPageUI.classList.add("hidden");
-  //   historyPageUI.classList.add("hidden");
-  // }
 });
 
-// Implementing Logout
-btnLogout.addEventListener("click", function (e) {
-  e.preventDefault();
-
-  displayLogin();
-});
-
-btnDeleteAcc.addEventListener("click", function (e) {
-  e.preventDefault();
-  const confirmDelete = confirm(
-    "Are you sure you want to delete your account?"
-  );
-  if (confirmDelete) {
-    localStorage.removeItem("username");
-    localStorage.removeItem("pin");
-
-    displayLogin();
-  }
-});
-// } else if (inputPinLoginValue.length < 4 || inputPinLoginValue.length > 4) {
-//   alert("Pin must be 4 digits!");
-// inputUsernameLogin.addEventListener("change", function (e) {
-//   validateLoginInput();
-// });
-
-// Check if input pin value is empty
-// Check if it is only numbers
-// Check if it is 4 digits
-
-// const validatePinLogin = () => {
-
-//   if ((inputPinLoginValue = "")) {
-//     alert("Please enter your pin!");
-//   } else if (inputPinLoginValue.length < 4 || inputPinLoginValue.length > 4) {
-//     alert("Pin must be 4 digits!");
-//   }
-// };
-
-//  if (inputUsernameLoginValue === "" && inputPinLogin.value === "") {
-//    alert("Please fill in your username and pin to continue!!!");
-//  } else if (inputUsernameLogin.value === "") {
-//    alert("Please fill in your username!!!");
-//  } else if (inputPinLogin.value === "") {
-//    alert("Please fill in your pin!!!");
-//  }
-
-// btnLogin.addEventListener("click", function (e) {
+// // Implementing Logout
+// btnLogout.addEventListener("click", function (e) {
 //   e.preventDefault();
-//   validateUsernameLogin();
+//   displayLogin();
 // });
 
-// navLink.forEach((link) => {
-//   link.style.opacity = ".6";
-// });
-
-// Functions
-
-// Displaying transactions
-// const displayTransaction = function (acc) {
-//   transactionsContainer.innerHTML = "";
-
-//   acc.incomeFlows.forEach(function (income, index) {
-//     const type = income > 0 ? "deposit" : "transfer";
-
-//     const now = new Date();
-//     console.log(now);
-//     const date = `${now.getDate()}`.padStart(2, 0);
-//     const month = `${now.getMonth() + 1}`.padStart(2, 0);
-//     const year = now.getFullYear();
-//     const detailDisplay = acc.details[index];
-//     console.log(detailDisplay);
-
-//     const html = `<div class="transaction">
-//         <div class="transaction-title id">
-//           <p>#00${index + 1}</p>
-//         </div>
-//         <div class="transaction-title date">
-//           <p>${date}/${month}/${year}</p>
-//         </div>
-//         <div class="transaction-title type type-${type}">
-//           <p>${type.toUpperCase()}</p>
-//         </div>
-//         <div class="transaction-title details">
-//           <p>${detailDisplay}</p>
-//         </div>
-//         <div class="transaction-title type-${type} amount">
-//           <p>${currencyFormat(
-//             Math.abs(income),
-//             navigator.language,
-//             acc.currency
-//           )}</p>
-//           </div>
-//           </div>`;
-//     transactionsContainer.insertAdjacentHTML("afterbegin", html);
-//   });
-// };
-
-// // // console.log(transactionsContainer);
-
-// // Displaying Date
-// const displayDate = setInterval(function () {
-//   const now = new Date();
-//   // console.log(now);
-//   const date = `${now.getDate()}`.padStart(2, 0);
-//   const month = `${now.getMonth() + 1}`.padStart(2, 0);
-//   const year = now.getFullYear();
-//   const hour = `${now.getHours()}`.padStart(2, 0);
-//   const minutes = `${now.getMinutes()}`.padStart(2, 0);
-
-//   const options = {
-//     day: "numeric",
-//     month: "short",
-//     year: "numeric",
-//     hour: "numeric",
-//     minute: "numeric",
-//     second: "numeric",
-//   };
-
-//   dateEl.textContent = new Intl.DateTimeFormat("en-US", options).format(now);
-// }, 1000);
-
-// // Formatting currency
-// const currencyFormat = function (value, locale, currency) {
-//   return new Intl.NumberFormat(locale, {
-//     style: "currency",
-//     currency: currency,
-//   }).format(value);
-// };
-
-// // Displaying Current Balance
-// const displayCurBalance = function (acc) {
-//   acc.totalBalance = acc.incomeFlows.reduce((acc, cur) => acc + cur, 0);
-//   curBalanceEl.textContent = currencyFormat(
-//     acc.totalBalance,
-//     navigator.language,
-//     acc.currency
-//   );
-//   console.log(curBalanceEl.textContent);
-//   console.log(acc.totalBalance);
-// };
-
-// // Displaying Total Incomes
-// const displayIncomes = function (acc) {
-//   acc.totalIncomes = acc.incomeFlows
-//     .filter((income) => income > 0)
-//     .reduce((acc, cur) => acc + cur, 0);
-
-//   incBalanceEl.textContent = currencyFormat(
-//     acc.totalIncomes,
-//     navigator.language,
-//     acc.currency
-//   );
-//   console.log(acc.totalIncomes);
-// };
-
-// // Displaying Total Expenses
-// const displayExpenses = function (acc) {
-//   acc.totalExpenses = acc.incomeFlows
-//     .filter((income) => income < 0)
-//     .reduce((acc, cur) => acc + cur, 0);
-
-//   expBalanceEl.textContent = currencyFormat(
-//     Math.abs(acc.totalExpenses),
-//     navigator.language,
-//     acc.currency
-//   );
-//   console.log(acc.totalExpenses);
-// };
-
-// // let currentAcc;
-// // let username;
-// // let pin;
-
-// const homeActive = function () {
-//   homeNav.style.opacity = "1";
-//   historyNav.style.opacity = ".6";
-//   transferNav.style.opacity = ".6";
-//   topupNav.style.opacity = ".6";
-//   contactNav.style.opacity = ".6";
-//   settingsNav.style.opacity = ".6";
-//   homePageUI.classList.remove("hidden");
-//   historyPageUI.classList.add("hidden");
-//   transferPageUI.classList.add("hidden");
-// };
-
-// const transferActive = function () {
-//   transferNav.style.opacity = "1";
-//   homeNav.style.opacity = ".6";
-//   historyNav.style.opacity = ".6";
-//   topupNav.style.opacity = ".6";
-//   contactNav.style.opacity = ".6";
-//   settingsNav.style.opacity = ".6";
-//   transferPageUI.classList.remove("hidden");
-//   historyPageUI.classList.add("hidden");
-//   homePageUI.classList.add("hidden");
-// };
-
-// const historyActive = function () {
-//   historyNav.style.opacity = "1";
-//   homeNav.style.opacity = ".6";
-//   transferNav.style.opacity = ".6";
-//   topupNav.style.opacity = ".6";
-//   contactNav.style.opacity = ".6";
-//   settingsNav.style.opacity = ".6";
-//   historyPageUI.classList.remove("hidden");
-//   homePageUI.classList.add("hidden");
-//   transferPageUI.classList.add("hidden");
-// };
-
-// const username = inputUsernameLogin.value.trim();
-// console.log(username);
-
-// const pin = Number(inputPinLogin.value);
-// console.log(pin);
-
-// currentAcc = accounts.find((acc) => acc.username === username);
-// console.log(currentAcc);
-
-// if (currentAcc?.pin === pin) {
-//   loginPageUI.classList.add("hidden");
-//   bodyUI.classList.remove("hidden");
-//   homePageUI.classList.remove("hidden");
-//   transferPageUI.classList.add("hidden");
-//   historyPageUI.classList.add("hidden");
-//   greetingEl.textContent = `Good morning, ${username}`;
-// } else {
-//   validateUsernameLogin();
-//   validateLoginInput();
-// }
-
-// inputUsernameLogin.value = "";
-// inputPinLogin.value = "";
-
-// displayTransaction(currentAcc);
-// displayCurBalance(currentAcc);
-// displayIncomes(currentAcc);
-// displayExpenses(currentAcc);
-// console.log(currentAcc);
-// });
-
-// // displayCurBalance(currentAcc);
-// // displayExpenses(currentAcc);
-// // displayIncomes(currentAcc);
-// // displayTransaction(currentAcc);
-// // console.log(currentAcc.totalBalance);
-
-// // Implementing transfers
-// btnTransfer.addEventListener("click", function (e) {
+// btnDeleteAcc.addEventListener("click", function (e) {
 //   e.preventDefault();
-
-//   const receiverAcc = accounts.find(
-//     (acc) => acc.accountNo === Number(inputAcc.value)
+//   const confirmDelete = confirm(
+//     "Are you sure you want to delete your account?"
 //   );
-//   const amount = Number(inputAmt.value);
-//   const purpose = inputPurp.value;
-//   const pin = Number(inputPin.value);
+//   if (confirmDelete) {
+//     localStorage.removeItem("username");
+//     localStorage.removeItem("pin");
 
-//   if (
-//     receiverAcc?.accountNo !== currentAcc.accountNo &&
-//     amount > 0 &&
-//     amount <= currentAcc.totalBalance &&
-//     currentAcc.pin === pin
-//   ) {
-//     currentAcc.incomeFlows.push(-amount);
-//     currentAcc.details.push(purpose);
-//     receiverAcc.incomeFlows.push(amount);
-//     receiverAcc.details.push(purpose);
+//     displayLogin();
 //   }
-
-//   inputAmt.value = "";
-//   inputPurp.value = "";
-//   inputPin.value = "";
-//   inputAcc.value = "";
-
-//   displayCurBalance(currentAcc);
-//   displayExpenses(currentAcc);
-//   displayIncomes(currentAcc);
-//   displayTransaction(currentAcc);
-//   console.log(currentAcc.totalBalance);
 // });
-
-// // Implementing navigations
-
-// // Preventing side navigation link defaults
-// navLink.forEach((link) => {
-//   link.addEventListener("click", function (e) {
-//     e.preventDefault();
-//   });
-// });
-
-// // Preventing home icon navigation link defaults
-// homeIconLink.forEach((link) => {
-//   link.addEventListener("click", function (e) {
-//     e.preventDefault();
-//   });
-// });
-
-// // Showing active links
-// homeNav.addEventListener("click", function (e) {
-//   homeActive();
-// });
-
-// historyNav.addEventListener("click", function (e) {
-//   historyActive();
-// });
-
-// transferNav.addEventListener("click", function (e) {
-//   transferActive();
-// });
-
-// // topupNav.addEventListener("click", function (e) {});
-
-// // contactNav.addEventListener("click", function (e) {});
-
-// // settingsNav.addEventListener("click", function (e) {});
-
-// homeIconNav.addEventListener("click", function (e) {
-//   homeActive();
-// });
-
-// transferIconNav.addEventListener("click", function (e) {
-//   transferActive();
-// });
-
-// historyIconNav.addEventListener("click", function (e) {
-//   historyActive();
-// });
-
-// loanIconNav.addEventListener("click", function (e) {
-//   // topupActive();
-// });
-
-// contactsIconNav.addEventListener("click", function (e) {
-//   // contactsActive();
-// });
-
-// settingsIconNav.addEventListener("click", function (e) {
-//   // settingActive();
-// });
-// // export {
-// //   displayTransaction,
-// //   displayDate,
-// //   displayCurBalance,
-// //   displayIncomes,
-// //   displayExpenses,
-// // };
